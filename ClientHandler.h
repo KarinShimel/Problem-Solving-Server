@@ -4,9 +4,13 @@
 
 #ifndef SEARCHALGO_COMP_CLIENTHANDLER_H
 #define SEARCHALGO_COMP_CLIENTHANDLER_H
+#include <iostream>
 
 class ClientHandler{
-
+public:
+    virtual void handleClient(int serverSocket, int clientSocket){
+        std::cout << "Client Handler handleClient() Method" << std::endl;
+    }
 };
 
 

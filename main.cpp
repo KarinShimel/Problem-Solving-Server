@@ -5,11 +5,14 @@
 #include <iostream>
 #include "MySerialServer.h"
 #include "ServerSide.h"
+#include "MySerialServer.h"
 using namespace std;
+using namespace server_side;
+using namespace boot;
 
-
-int main() {
-    //server_side::Server server= server_side::Server();
-    std::cout << "Hello, World!" << std::endl;
+int main(int argc, char *argv[]) {
+    Main main1 = Main();
+    string argsad = argv[1];
+    main1.main(2, argv);
     return 0;
 }

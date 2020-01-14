@@ -1,3 +1,5 @@
 .idea
 /cmake-build-debug
 CMakeLists.txt
+auto_client.py
+matrix_test.txt
