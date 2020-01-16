@@ -7,6 +7,7 @@
 #include <cstring>
 
 #include "MyClientHandler.h"
+#include "CacheManager.h"
 
 using namespace std;
 
@@ -46,7 +47,7 @@ void MyClientHandler::handleClient(int serverSocket, int clientSocket) {
         }
 
 
-        std::cout << a << '\n';
+       // std::cout << a << '\n';
     }
     cout << "------------PRINT MAT---------------" << endl;
     for (int i = 0; i < matVector.size(); i++) {

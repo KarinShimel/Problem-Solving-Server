@@ -1,3 +1,4 @@
+/*
 //
 // Created by karin on 16/01/2020.
 //
@@ -14,7 +15,7 @@
 #include <stack>
 
 using namespace std;
-
+// tempplate<class Problem,class Solution>
 template<class T>
 class CacheManager {
 private:
@@ -97,3 +98,4 @@ T CacheManager<T>::get(string key) {
     return item->second.first;
 }
 #endif //SEARCHALGO_COMP_CACHEMANAGER_H
+*/
