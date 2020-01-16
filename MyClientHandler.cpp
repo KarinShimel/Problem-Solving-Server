@@ -86,7 +86,7 @@ void MyClientHandler::handleClient(int serverSocket, int clientSocket) {
             cout<<"Possible state: "<< point.getState().getI()<<","<< point.getState().getJ()<<" at a cost of: "<< point.getCost()<<endl;
     }*/
 
-    //Solver<string,string> solver = Solver<string,string>();
+    // The Shit Happens Here !!!!!!!!!!!!!!!!!!!!!
     //ObjectAdapter<vector<vector<int>>, string> objectAdapter = ObjectAdapter<vector<vector<int>>, string>(
      //       matrixSearchable);
     // Creating a solution
