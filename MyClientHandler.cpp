@@ -5,6 +5,7 @@
 #include <unistd.h>
 
 #include "MyClientHandler.h"
+#include "CacheManager.h"
 using namespace std;
 
 void MyClientHandler::handleClient(int serverSocket, int clientSocket) {
