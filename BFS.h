@@ -21,7 +21,7 @@ class BFS {
 
     }
 
-};
+};//!!
 
 
 #endif //SEARCHALGO_COMP_BFS_H
