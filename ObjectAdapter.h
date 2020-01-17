@@ -7,6 +7,7 @@
 #define SEARCHALGO_COMP_OBJECTADAPTER_H
 #include "Solver.h"
 #include "ISearchable.h"
+#include "Searcher.h"
 
 template <class Problem,class Solution>
 class ObjectAdapter : public Solver<Problem,Solution>{
@@ -15,6 +16,7 @@ class ObjectAdapter : public Solver<Problem,Solution>{
         this->searchable = searchable1;
     }
     Solution solve(Problem){
+        //Searcher searcher = BestFS();
         // searcher.search(searchable)
     }
 };

@@ -10,7 +10,7 @@
 
 using namespace std;
 using namespace server_side;
-using namespace boot;
+
 
 vector<vector<int>> createVec(string filename) {
     vector<vector<int>> matVector;
@@ -53,7 +53,7 @@ vector<vector<int>> createVec(string filename) {
         cout<<""<<endl;
     }
 }
-
+using namespace boot;
     int main(int argc, char *argv[]) {
         Main main1 = Main();
         string argsad = argv[1];
