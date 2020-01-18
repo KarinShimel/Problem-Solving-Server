@@ -5,10 +5,15 @@
 #include <unistd.h>
 #include <vector>
 #include <cstring>
+#include <vector>
+#include <sstream>
+#include <iterator>
+
 
 #include "MyClientHandler.h"
 #include "MySearchable.h"
 #include "State.h"
+#include "CacheManager.h"
 #include "ObjectAdapter.h"
 
 using namespace std;
@@ -66,31 +71,40 @@ void MyClientHandler::handleClient(int serverSocket, int clientSocket) {
         cout << "" << endl;
     }*/
 
-
-    // Creating the problem
-    MySearchable<Point> matrixSearchable = MySearchable<Point>(matVector);
-    matrixSearchable.setMaxLines(lines);
-    matrixSearchable.setMaxCols(cols);
-    // Tests !!!!!!
-    /*matrixSearchable.setGoal(36, 36);
-    Point p = Point(0, 0);
-    bool a = matrixSearchable.isGoal(State<Point>("36,36", p));
-    if (a) {
-        cout << "its true" << endl;
+    // flattening the matrix
+    vector<int> flatMat;
+    vector<int> lineVector1;
+    for (int i = 0; i < lines + 1; i++) {
+        for (int j = 0; j < cols + 1; j++) {
+            flatMat.push_back(matVector[i][j]);
+        }
     }
-    State<Point> testState = State<Point>("0,0",p);
-    testState.setCost((double)matVector.at(0).at(0));
-    list <State<Point>> list= matrixSearchable.getAllPossibleStates(testState);
-    cout<<"From (0,0) we can reach:"<<endl;
-    for(State<Point> point  : list){
-            cout<<"Possible state: "<< point.getState().getI()<<","<< point.getState().getJ()<<" at a cost of: "<< point.getCost()<<endl;
-    }*/
-
-    // The Shit Happens Here !!!!!!!!!!!!!!!!!!!!!
-    //ObjectAdapter<vector<vector<int>>, string> objectAdapter = ObjectAdapter<vector<vector<int>>, string>(
-     //       matrixSearchable);
+    std::stringstream result;
+    std::copy(flatMat.begin(), flatMat.end(), std::ostream_iterator<int>(result, " "));
+    string flatMatrix = result.str().c_str();
+    // Creating the problem
+    MySearchable<Point> matrixSearchable = MySearchable<Point>(flatMatrix, lines, cols);
+    // Checking if there is a solution to the problem in the cache
+    CacheManager<string, string> cacheManager = CacheManager<string, string>(5);
+    bool solutionInCache = true;
     // Creating a solution
-    // If the solution is in the cache manager
-    // If the solution is not in the cache manager - we will solve the problem
-    // Updating the solution in the cache manager
+    string solution;
+    try {
+        // If the solution is in the cache manager
+        solution = cacheManager.get(flatMatrix);
+    } catch (const char *e) {
+        // If the solution is not in the cache manager - we will solve the problem after we get an error
+        solutionInCache = false;
+        cout << "not in files" << endl;
+    }
+    // If there isn't a solution, we will solve the problem
+    if (!solutionInCache) {
+        ObjectAdapter<Point,string> objectAdapter = ObjectAdapter<Point,string>(matrixSearchable);
+        Point p = Point(0,0);
+        solution = objectAdapter.solve(p);
+    }
+    // sending the solution
+    cout << "Solution: " << solution << endl;
+
+
 }
