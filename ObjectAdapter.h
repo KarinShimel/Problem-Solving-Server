@@ -12,12 +12,17 @@
 template <class Problem,class Solution>
 class ObjectAdapter : public Solver<Problem,Solution>{
     MySearchable<Problem> searchable;
-    ObjectAdapter(MySearchable<Problem> searchable1){
-        this->searchable = searchable1;
-    }
+public:
+
     Solution solve(Problem){
         //Searcher searcher = BestFS();
         // searcher.search(searchable)
+        cout<< "Im here thank god"<<endl;
+        return "a solution";
+    }
+
+    ObjectAdapter(MySearchable<Problem> searchable1){
+        this->searchable = searchable1;
     }
 };
 

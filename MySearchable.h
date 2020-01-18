@@ -9,6 +9,42 @@
 #include "ISearchable.h"
 #include "State.h"
 
+
+vector<vector<int>> convStringToVectorofVectors(string st, int i, int j) {
+    vector<vector<int>> matVector;
+    vector<int> lineVector;
+    int countSpaces;
+    int countRows=0;
+    int firstDigit, lastDigit;
+    string notDigitOptions = {',', ' '};
+    string digitOptions = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
+    for (int c = 0; c < st.size() && countRows<i+1;) {
+        lineVector.clear();
+        countSpaces = 0;
+        while (countSpaces <= j) {
+            firstDigit = st.find_first_not_of(notDigitOptions, c);
+            lastDigit = st.find_first_not_of(digitOptions, firstDigit + 1);
+            if (firstDigit != -1) {
+                int number = stoi(st.substr(firstDigit, (lastDigit - firstDigit)));
+                lineVector.push_back(number);
+                countSpaces++;
+            } else {
+                break;//no more numbers
+            }
+            c = lastDigit;
+        }
+        countRows++;
+        matVector.push_back(lineVector);
+    }
+    /*for (int i = 0; i < matVector.size(); i++) {
+        for (int j = 0; j < matVector[i].size(); j++) {
+            cout << matVector[i][j] << "  ";
+        }
+        cout << "" << endl;
+    }*/
+    return matVector;
+}
+
 class Point {
 private:
     int i;
@@ -51,22 +87,25 @@ private:
     int maxI;
     int maxJ;
 public:
-    MySearchable(vector<vector<int>> mat) {
-        this->matrix = mat;
+    MySearchable(string mat, int lines, int cols) {
+        this->maxI = lines;
+        this->maxJ = cols;
+        this->matrix = convStringToVectorofVectors(mat,lines,cols);
         this->initial = State<Point>("0,0", Point(0, 0));
         /*State<nullptr_t> nullState("null", nullptr);
         this->initial.setFrom(nullState);*/
     }
+    MySearchable(){}
 
     void setGoal(int i1, int j1) {
         this->goalState = State<Point>(createNameFromIJ(i1, j1), Point(i1, j1));
     }
 
-    State<T> getInitial() {
+    virtual State<T> getInitial() override {
         return this->initial;
     }
 
-    bool isGoal(State<T> aState) {
+    virtual bool isGoal(State<T> aState) override {
         return aState == this->goalState;
     }
 
@@ -117,6 +156,7 @@ public:
         }
         return possibleStates;
     }
+    ~MySearchable()= default;
 };
 
 #endif //SEARCHALGO_COMP_MYSEARCHABLE_H
