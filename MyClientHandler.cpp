@@ -13,6 +13,7 @@
 #include "MyClientHandler.h"
 #include "MySearchable.h"
 #include "State.h"
+#include "BestFS.h"
 #include "CacheManager.h"
 #include "ObjectAdapter.h"
 
@@ -48,7 +49,7 @@ void MyClientHandler::handleClient(int serverSocket, int clientSocket) {
                     number = stoi(line.substr(firstDigit, (lastDigit - firstDigit)));
                     lineVector.push_back(number);
                 } else {
-                    break;//there are no more numbers
+                    break;//no more numbers
                 }
                 i = lastDigit;
                 if (lines == 0)
@@ -63,6 +64,7 @@ void MyClientHandler::handleClient(int serverSocket, int clientSocket) {
     lines -= 3;
     cols -= 1;
     cout << lines << "," << cols << endl;
+    
     /*cout << "------------PRINT MAT---------------" << endl;
     for (int i = 0; i < matVector.size(); i++) {
         for (int j = 0; j < matVector[i].size(); j++) {
