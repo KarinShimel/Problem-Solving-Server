@@ -18,7 +18,9 @@ public:
     Solution solve(Problem){
         //Searcher searcher = BestFS();
         // searcher.search(searchable)
-
+        BestFS<Problem,Solution> bestFs ;
+        bestFs = BestFS<Problem,Solution>();
+        Solution s = bestFs.search(this->searchable);
        // Searcher s= BestFS.search(searchable);
         cout<< "Im here thank god"<<endl;
         return "a solution";

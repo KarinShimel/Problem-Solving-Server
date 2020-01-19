@@ -14,11 +14,11 @@ vector<vector<int>> convStringToVectorofVectors(string st, int i, int j) {
     vector<vector<int>> matVector;
     vector<int> lineVector;
     int countSpaces;
-    int countRows=0;
+    int countRows = 0;
     int firstDigit, lastDigit;
     string notDigitOptions = {',', ' '};
     string digitOptions = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
-    for (int c = 0; c < st.size() && countRows<i+1;) {
+    for (int c = 0; c < st.size() && countRows < i + 1;) {
         lineVector.clear();
         countSpaces = 0;
         while (countSpaces <= j) {
@@ -68,7 +68,13 @@ public:
     bool operator==(const Point &p) const {
         return (this->i == p.i && this->j == p.j);
     }
+
+    friend ostream &operator<<(ostream &out, const Point &s) {
+        out << "(" << s.i << "," << s.j << ")";
+        return out;
+    }
 };
+
 string createNameFromIJ(int i1, int j1) {
     // taking int i, int j and turning into -> "i,j"
     string iStr = to_string(i1);
@@ -90,12 +96,13 @@ public:
     MySearchable(string mat, int lines, int cols) {
         this->maxI = lines;
         this->maxJ = cols;
-        this->matrix = convStringToVectorofVectors(mat,lines,cols);
+        this->matrix = convStringToVectorofVectors(mat, lines, cols);
         this->initial = State<Point>("0,0", Point(0, 0));
         /*State<nullptr_t> nullState("null", nullptr);
         this->initial.setFrom(nullState);*/
     }
-    MySearchable(){}
+
+    MySearchable() {}
 
     void setGoal(int i1, int j1) {
         this->goalState = State<Point>(createNameFromIJ(i1, j1), Point(i1, j1));
@@ -120,7 +127,7 @@ public:
 
     State<T> createNewState(State<Point> currState, int i, int j) {
         // creating the new state - constructor(name,Point)
-        State<T>  newState = (State<Point>(createNameFromIJ(i, j), Point(i, j)));
+        State<T> newState = (State<Point>(createNameFromIJ(i, j), Point(i, j)));
         // getting the cost from the current state to the new state
         newState.setCost(currState.getCost() + this->matrix.at(i).at(j));
         // setting the fact that the new state was reached by using this state
@@ -139,24 +146,25 @@ public:
         j = currState.getState().getJ();
         // Finding up i-1,j
         if (i > 0) { // Making sure we won't reach out of matrix bounds
-            possibleStates.push_front(this->createNewState(currState,i - 1, j));
+            possibleStates.push_front(this->createNewState(currState, i - 1, j));
         }
         // Finding  down neighbor i+1,j
         if (i < this->maxI) {// Making sure we won't reach out of matrix bounds
-            possibleStates.push_front(this->createNewState(currState,i + 1, j));
+            possibleStates.push_front(this->createNewState(currState, i + 1, j));
         }
         // Finding left i,j-1
         if (j > 0) {// Making sure we won't reach out of matrix bounds
             // if we are at j=0, there isn't a left cell
-            possibleStates.push_front(this->createNewState(currState,i, j - 1));
+            possibleStates.push_front(this->createNewState(currState, i, j - 1));
         }
         // Finding right i,j+1
         if (j < this->maxJ) {
-            possibleStates.push_front(this->createNewState(currState,i, j + 1));
+            possibleStates.push_front(this->createNewState(currState, i, j + 1));
         }
         return possibleStates;
     }
-    ~MySearchable()= default;
+
+    ~MySearchable() = default;
 };
 
 #endif //SEARCHALGO_COMP_MYSEARCHABLE_H

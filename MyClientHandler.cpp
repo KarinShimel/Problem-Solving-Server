@@ -13,7 +13,6 @@
 #include "MyClientHandler.h"
 #include "MySearchable.h"
 #include "State.h"
-#include "BestFS.h"
 #include "CacheManager.h"
 #include "ObjectAdapter.h"
 

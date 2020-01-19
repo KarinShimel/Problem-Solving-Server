@@ -10,9 +10,12 @@
 
 template<class Problem, class Solution>
 class BestFS : public ISearcher<Problem, Solution> {
-
-    Solution search(ISearchable<Problem> searchable) {
-        State<Problem> initialState;
+public:
+    Solution search(MySearchable<Problem> searchable) override {
+        cout<< " Got here OK "<<endl;
+        State<Problem> s = searchable.getInitial();
+        s.print(cout);
+        /*State<Problem> initialState;
         priority_queue <State<Problem>> open = searchable.getInitial();
         queue <State<Problem>> close;
         State<Problem> n, s;
@@ -47,8 +50,12 @@ class BestFS : public ISearcher<Problem, Solution> {
                     item.setFrom(n);
                 }
             }
-        }
+        }*/
     }
+     int getNumberOfNodesEvaluated() override {
+
+    }
+    ~BestFS(){}
 };
 
 
