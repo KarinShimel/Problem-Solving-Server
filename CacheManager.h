@@ -1,10 +1,10 @@
-/*
 //
-// Created by karin on 16/01/2020.
+// Created by karin on 01/12/2019.
 //
 
-#ifndef SEARCHALGO_COMP_CACHEMANAGER_H
-#define SEARCHALGO_COMP_CACHEMANAGER_H
+#ifndef E2_EX2_H
+#define E2_EX2_H
+
 #include <iostream>
 #include <string>
 #include <unordered_map>
@@ -13,35 +13,42 @@
 #include <map>
 #include <fstream>
 #include <stack>
+using namespace std;
+
+#include <vector>
+#include <sstream>
+#include <iterator>
+
+
 
 using namespace std;
-// tempplate<class Problem,class Solution>
-template<class T>
+template<class Problem,class Solution>
 class CacheManager {
 private:
     unsigned int cacheSize;
-    unordered_map<string, pair<T, list<string>::iterator>> cacheMap;
-    list<string> data;
+    unordered_map<Problem, pair<Solution, typename list<Problem>::iterator>> cacheMap;
+    list<Problem> data;
 public:
     CacheManager(int num) {
         this->cacheSize = num;
     }
 
-    void insert(string, T);
 
-    T get(string key);
+    void insert(Problem, Solution);
 
-    void foreach(function<void(T &)> function);
+    Solution get(Problem key);
 
-    void use(typename unordered_map<string, pair<T, list<string>::iterator>>::iterator &iterator) {
+    void foreach(function<void(Solution &)> function);
+
+    void use(typename unordered_map<Problem, pair<Solution, typename list<Problem>::iterator>>::iterator &iterator) {
         data.erase(iterator->second.second);
         data.push_front(iterator->first);
         iterator->second.second = data.begin();
     }
 };
 
-template<class T>
-void CacheManager<T>::insert(string key, T obj) {
+template<class Problem,class Solution>
+void CacheManager<Problem,Solution>::insert(Problem key, Solution obj) {
     auto item = cacheMap.find(key);
     // if the key exists - setting the value
     if (item != cacheMap.end()) {
@@ -61,34 +68,34 @@ void CacheManager<T>::insert(string key, T obj) {
     }
     // writing to the files
     ofstream myFile;
-    string file = T::class_name + key;
+    string file =  key;
     myFile.open(file, ios::binary | ios::out);
-    myFile.write((char *) &obj, sizeof(T));
+    myFile.write((char *) &obj, sizeof(Solution));
     myFile.close();
 }
 
-template<class T>
-void CacheManager<T>::foreach(function<void(T &)> function) {
-    for (string key: data) {
+template<class Problem,class Solution>
+void CacheManager<Problem,Solution>::foreach(function<void(Solution &)> function) {
+    for (Problem key: data) {
         function(cacheMap[key].first);
     }
 }
 
-template<class T>
-T CacheManager<T>::get(string key) {
+template<class Problem,class Solution>
+Solution CacheManager<Problem,Solution>::get(Problem key) {
     auto item = cacheMap.find(key);
     if (item == cacheMap.end()) {
         // check if in data
         ifstream in_file;
-        string file_name = T::class_name + key;
+        string file_name = key;
         in_file.open(file_name, ios::binary | ios::in);
         if (!in_file) {
             // if not in data
             throw "an error";
         }
         // getting the object from the file
-        T object;
-        in_file.read((char *) &object, sizeof(T));
+        Solution object;
+        in_file.read((char *) &object, sizeof(Solution));
         this->insert(key, object);
         in_file.close();
         return object;
@@ -97,5 +104,6 @@ T CacheManager<T>::get(string key) {
     use(item);
     return item->second.first;
 }
-#endif //SEARCHALGO_COMP_CACHEMANAGER_H
-*/
+
+
+#endif //E2_EX2_H
