@@ -9,6 +9,7 @@
 
 class MyClientHandler : public ClientHandler{
     void handleClient(int serverSocket, int clientSocket) override ;
+    ClientHandler* duplicate();
 };
 
 

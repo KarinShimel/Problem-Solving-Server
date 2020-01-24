@@ -5,6 +5,7 @@
 #include "ServerSide.h"
 #include "MySerialServer.h"
 #include "MyClientHandler.h"
+#include "MyParallelServer.h"
 using namespace std;
 
 namespace boot
@@ -14,6 +15,7 @@ namespace boot
         Server* server = &mySerialServer;
         MyClientHandler myClientHandler = MyClientHandler();
         ClientHandler * clientHandler = &myClientHandler;
+        //clientHandler->handleClient(1,1);
         server->open(stoi((argv)[1]),clientHandler);
         return 0;
     }

@@ -8,6 +8,7 @@
 #include "ServerSide.h"
 #include "MySerialServer.h"
 
+std::mutex mutex_lock;
 using namespace std;
 using namespace server_side;
 using namespace boot;

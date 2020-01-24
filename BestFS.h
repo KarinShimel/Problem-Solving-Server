@@ -15,10 +15,10 @@ public:
         cout<< " Got here OK "<<endl;
         State<Problem> s = searchable.getInitial();
         s.print(cout);
-        /*State<Problem> initialState;
+        State<Problem> initialState;
         priority_queue <State<Problem>> open = searchable.getInitial();
         queue <State<Problem>> close;
-        State<Problem> n, s;
+        State<Problem> n;
         list<State<Problem>> adj;
         while (!open.empty()) {
             n = dequeue(open);
@@ -50,7 +50,7 @@ public:
                     item.setFrom(n);
                 }
             }
-        }*/
+        }
     }
      int getNumberOfNodesEvaluated() override {
 

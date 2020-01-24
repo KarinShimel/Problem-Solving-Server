@@ -6,6 +6,7 @@
 #define SEARCHALGO_COMP_ISEARCHER_H
 
 #include "ISearchable.h"
+#include "MySearchable.h"
 
 
 template <class Problem,class Solution>

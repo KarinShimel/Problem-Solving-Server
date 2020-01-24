@@ -7,6 +7,7 @@
 
 #include "State.h"
 #include <list>
+#include <vector>
 template<class T>
 class ISearchable {
 public:
