@@ -13,6 +13,7 @@
 using std::cout;
 
 class Point {
+    // The class that represents a point in the matrix
 
 private:
     int i;
@@ -43,7 +44,6 @@ public:
     }
 
     friend ostream &operator<<(ostream &out, const Point &s) {
-        //cout<< s.i<<","<<s.j<<endl;
         out << "(" << s.getI() << "," << s.getJ() << ")";
         return out;
     }
@@ -193,7 +193,6 @@ public:
         if (i > 0) { // Making sure we won't reach out of matrix bounds
             if (this->matrix.at(i - 1).at(j) != -1) {
                 State<Point> p1 = this->createNewState(currState, i - 1, j);
-                //p1.setDirection("Up");
                 possibleStates.push_front(p1);
             }
         }

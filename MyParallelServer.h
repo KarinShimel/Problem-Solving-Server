@@ -28,10 +28,9 @@ class MyParallelServer : public Server {
 public:
     MyParallelServer(){}
     void open(int port ,ClientHandler* c) ;
-    void start(int socketfd, sockaddr_in address, ClientHandler *cH, bool stop);
+    void startThread(int socketfd, sockaddr_in address, ClientHandler *cH, bool stop);
     void handleForThread(int client_socket ,int socketfd , ClientHandler *cH);
-    ~MyParallelServer(){
-    }
+    ~MyParallelServer(){}
 };
 
 

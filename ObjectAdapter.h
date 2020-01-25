@@ -9,7 +9,6 @@
 #include "Solver.h"
 #include "ISearchable.h"
 #include "Searcher.h"
-#include "BestFS.h"
 #include "BestFirstSearch.h"
 #include "BreadthFirstSearch.h"
 #include "DepthFirstSearch.h"
@@ -22,13 +21,9 @@ public:
     MySearchable<Problem> searchable;
 
     Solution solve(Problem) {
-        //Searcher searcher = BestFS();
-        // searcher.search(searchable)
-        DepthFirstSearch<Problem, Solution> bfs = DepthFirstSearch
-                <Problem, Solution>();
+        DepthFirstSearch<Problem, Solution> bfs = DepthFirstSearch<Problem, Solution>();
         Solution s = bfs.search(this->searchable);
-        // Searcher s= BestFS.search(searchable);
-        cout << "Im here thank god" << endl;
+        //cout << s << endl;
         return s;
     }
 

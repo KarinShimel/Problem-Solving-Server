@@ -18,6 +18,8 @@ public:
     }
     string getPath(State<Problem> goal, MySearchable<Problem> searchable){
         stack<string> pathQ;
+        int steps=0;
+
         while(!((goal)== searchable.getInitial()) ) {
             State<Problem>* from = goal.cameFrom;
             string a = searchable.findDirection((goal),*from);
@@ -26,6 +28,7 @@ public:
         }
         string path;
         while (!pathQ.empty()) {
+            steps++;
             path += pathQ.top();
             path += ", ";
             pathQ.pop();

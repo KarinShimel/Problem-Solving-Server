@@ -25,8 +25,6 @@ using namespace server_side;
 
 class MySerialServer : public Server {
 public:
-    // !!!!!!!!!!!!!
-    // The linker is making me put the implementation here
     void open(int port, ClientHandler *clientHandler) override {
         string port1 = to_string(port);
         const char *portNum = port1.c_str();
@@ -52,7 +50,7 @@ public:
                 std::cerr << "Error during listening command" << std::endl;
                 exit(-3);
             } else {
-                std::cout << "Server is now listening ..." << std::endl;
+                std::cout << "Serial server is now listening ..." << std::endl;
             }
             // Making a timeout
             struct timeval tv;

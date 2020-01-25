@@ -5,38 +5,31 @@
 #include <thread>
 #include <mutex>
 #include "MyParallelServer.h"
-extern std::mutex mutex_lock;
 
 void MyParallelServer::open(int port, ClientHandler *client_handler) {
     bool stop = false;
     ClientHandler *cH = client_handler;
     int socketfd = socket(AF_INET, SOCK_STREAM, 0);
     if (socketfd == -1) {
-        //error
         std::cerr << "Could not create a socket" << std::endl;
     }
-
-    //bind socket to IP address new
-    sockaddr_in address; //in means IP4
+    sockaddr_in address;
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(port);
-    //the actual bind command
     if (bind(socketfd, (struct sockaddr *) &address, sizeof(address)) == -1) {
         std::cerr << "Could not bind the socket to an IP" << std::endl;
     }
-    //making socket listen to the port
     if (listen(socketfd, 5) == -1) {
         std::cerr << "Error during listening command" << std::endl;
     } else {
-        std::cout << "Server is now listening ..." << std::endl;
+        std::cout << "Parallel server is now listening ..." << std::endl;
     }
-    thread myThread(&MyParallelServer::start, this, socketfd, address, cH, stop);
+    thread myThread(&MyParallelServer::startThread, this, socketfd, address, cH, stop);
     myThread.join();
 }
 
-void MyParallelServer::start(int socketfd, sockaddr_in address, ClientHandler *client_handler, bool stop) {
-    cout << "Parallel server waiting for clients.." << endl;
+void MyParallelServer::startThread(int socketfd, sockaddr_in address, ClientHandler *client_handler, bool stop) {
     while (!stop) {
         int addrlen = sizeof(address);
         // Making a timeout
@@ -60,6 +53,7 @@ void MyParallelServer::start(int socketfd, sockaddr_in address, ClientHandler *c
                 std::cerr << "can't accept client" << std::endl;
                 return;
             }
+            // Sending the client on its own thread
             thread myThread(&MyParallelServer::handleForThread, this, socketfd,client_socket, client_handler);
             myThread.detach();
         }
@@ -67,7 +61,5 @@ void MyParallelServer::start(int socketfd, sockaddr_in address, ClientHandler *c
 }
 
 void MyParallelServer::handleForThread(int socketfd, int client_socket, ClientHandler *clientHandler) {
-    mutex_lock.lock();
     clientHandler->handleClient(socketfd, client_socket);
-    mutex_lock.unlock();
 }

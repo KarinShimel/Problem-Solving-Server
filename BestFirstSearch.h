@@ -5,85 +5,91 @@
 #ifndef SEARCHALGO_COMP_BESTFIRSTSEARCH_H
 #define SEARCHALGO_COMP_BESTFIRSTSEARCH_H
 
+#include <queue>
 #include "Searcher.h"
-template <class Problem,class Solution>
-class BestFirstSearch : public Searcher<Problem,Solution>{
 
-    // a class for the priority queue order
-    class StateComparator{
+#include "Searcher.h"
+#include "algorithm"
+
+template<class Problem, class Solution>
+class BestFirstSearch : public Searcher<Problem, Solution> {
+
+    class StateComparator {
     public:
-        bool operator()(State<Problem>* left, State<Problem>* right){
-            return (left->getTotalCost() > right->getTotalCost());
+        bool operator()(State<Problem> *left, State<Problem> *right) {
+            return (left->getCost() > right->getCost());
         }
     };
 
 public:
-    BestFirstSearch(){
-        this->evaluatedNodes = 0;
-        this->pathCost = 0;
+    int nodesEvaluated = 0;
+
+    BestFirstSearch() {}
+
+    string getPath(State<Problem> goal, MySearchable<Problem> searchable) {
+        stack<string> pathQ;
+        int steps = 0;
+        while (!((goal) == searchable.getInitial())) {
+            State<Problem> *from = goal.cameFrom;
+            string a = searchable.findDirection((goal), *from);
+            pathQ.push(a);
+            goal = *from;
+        }
+        string path;
+        while (!pathQ.empty()) {
+            steps++;
+            path += pathQ.top();
+            path += ", ";
+            pathQ.pop();
+        }
+        path.resize(path.size() - 2);
+        return path;
     }
 
-    /*
-    * this method reality the Best search first algorithm
-    */
-    vector<State<Problem>*> search(MySearchable<Problem> *searchable) override {
+    vector<State<Problem> *> search(MySearchable<Problem> *searchable) override {
         this->initialization();
-        State<Problem>* curS =searchable->getInitState();
-        //the end state
-        State<Problem>* endS =searchable->getGoalState();
+        State<Problem> *curr = searchable->getInitial();
+        State<Problem> *goal = searchable->getGoalState();
 
-        priority_queue<State<Problem>*, vector<State<Problem>*>, StateComparator> openPQueue;
-        curS->setTotalCost(curS->getCost());
-        openPQueue.push(curS);
+        priority_queue < State<Problem> * , vector<State<Problem> *>, StateComparator > openPQueue;
+        openPQueue.push(curr);
 
-        while (!openPQueue.empty()){
-            //see the object in the front of the queue
-            curS = openPQueue.top();
+        while (!openPQueue.empty()) {
+            curr = openPQueue.top();
             openPQueue.pop();
-            //this->evaluatedNodes ++;
-            if (!curS->getIsMarked()){
-                this->evaluatedNodes ++;
-            }
-            curS->setIsMarked(true);
-            //we check if we arrive the end and found our path
-            if(curS->equals(endS)){
-                break;
+            nodesEvaluated++;
+
+            curr->setVisited(true);
+            if (curr==goal) {
+                return getPath(curr);
             }
 
-            // get all the possible states that adjacent to current state
-            vector<State<Problem>*> possibleStates = searchable->getPossibleStates(curS);
-            long upToCost = curS->getTotalCost();
+            // get all the possible states from this state
+            vector<State<Problem> *> possibleStates = searchable->getPossibleStates(curr);
+            long upToCost = curr->getCost();
             for (int i = 0; i < possibleStates.size(); i++) {
-                State<Problem>* adj = possibleStates[i];
-                // calculate the total path cost for this adj
+                State<Problem> *adj = possibleStates[i];
                 long adjFutureTotalCost = adj->getCost() + upToCost;
-                // if the total cost is -1- we didnt get to thus node yet;
-                if(adj->getTotalCost() == -1 || adj->getTotalCost() > adjFutureTotalCost){
-                    adj->setCameFrom(curS);
-                    adj->setTotalCost(adjFutureTotalCost);
-                    // update the queue order
-                    if (adj->getTotalCost() > adjFutureTotalCost) {
+
+                if (adj->getCost() > adjFutureTotalCost) {
+                    adj->setFrom(curr);
+                    adj->setCost(adjFutureTotalCost);
+                    if (adj->getCost() > adjFutureTotalCost) {
                         openPQueue = updatePriorityOrder(openPQueue);
-                    } else{
+                    } else {
                         openPQueue.emplace(adj);
                     }
                 }
-
             }
         }
-        return this->findPath(searchable->getGoalState());
+        return getPath(searchable->getGoalState());
     }
 
-    /**
-     * this function orders the priority queue
-     * @param curQueue
-     * @return new priority queue
-     */
-    priority_queue<State<Problem>*, vector<State<Problem>*>, StateComparator> updatePriorityOrder
-    (priority_queue<State<Problem>*, vector<State<Problem>*>, StateComparator> curQueue){
-        priority_queue<State<Problem>*, vector<State<Problem>*>, StateComparator> newQueue;
-        while (!curQueue.empty()){
-            State<Problem>* temp = curQueue.top();
+    priority_queue<State<Problem> *, vector<State<Problem> *>, StateComparator> updatePriorityOrder
+            (priority_queue<State<Problem> *, vector<State<Problem> *>, StateComparator> curQueue) {
+        priority_queue < State<Problem> * , vector<State<Problem> *>, StateComparator > newQueue;
+        while (!curQueue.empty()) {
+            State<Problem> *temp = curQueue.top();
             curQueue.pop();
             newQueue.emplace(temp);
         }

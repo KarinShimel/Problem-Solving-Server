@@ -16,7 +16,6 @@ using namespace boot;
 
     int main(int argc, char *argv[]) {
         Main main1 = Main();
-        string argsad = argv[1];
         main1.main(2, argv);
         return 0;
     }

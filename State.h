@@ -19,30 +19,19 @@ private:
     string name; // Name of state
     T state;
     double value;
-    double cost; // Cost to state
     bool visited = false;
-    double shortestPathCost;
-
-    //typedef State<T> cameFrom;
 public:
+    double cost; // Cost to state
     State<T>* cameFrom;
     State(string name1, T state1, double val) {
         this->name = name1;
         this->state = state1;
         this->value = val;
-        //this->cameFrom = from;
     }
 
     State() {
 
     }
-    void setShortesPathCost(double val){
-        this->shortestPathCost = val;
-    }
-    double getShortestPathCost(){
-        return this->shortestPathCost;
-    }
-
     void setVisited() {
         this->visited = true;
     }
@@ -76,7 +65,6 @@ public:
 
 
     bool operator==(const State<T> &s) const {
-        //this->name.compare(s.name) && strcmp(this->cameFrom.state, s.cameFrom.state
         return (this->state == s.state);
     }
 

@@ -11,11 +11,13 @@ using namespace std;
 namespace boot
 {
     int Main::main(int argc, char **argv) {
-        MySerialServer mySerialServer = MySerialServer();
+        // Creating the specific server data - a parallel server
+        MyParallelServer mySerialServer = MyParallelServer();
         Server* server = &mySerialServer;
+        // a specific client handler to handle a matrix
         MyClientHandler myClientHandler = MyClientHandler();
         ClientHandler * clientHandler = &myClientHandler;
-        //clientHandler->handleClient(1,1);
+        // Running the server and handler
         server->open(stoi((argv)[1]),clientHandler);
         return 0;
     }
