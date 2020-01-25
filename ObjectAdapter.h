@@ -5,26 +5,29 @@
 #ifndef SEARCHALGO_COMP_OBJECTADAPTER_H
 
 #define SEARCHALGO_COMP_OBJECTADAPTER_H
+
 #include "Solver.h"
 #include "ISearchable.h"
 #include "Searcher.h"
-#include "BestFS.h"
+#include "BestFirstSearch.h"
+#include "BreadthFirstSearch.h"
+#include "DepthFirstSearch.h"
+#include "AStar.h"
 
-template <class Problem,class Solution>
-class ObjectAdapter : public Solver<Problem,Solution>{
-    MySearchable<Problem> searchable;
+template<class Problem, class Solution>
+class ObjectAdapter : public Solver<Problem, Solution> {
+
 public:
+    MySearchable<Problem> searchable;
 
-    Solution solve(Problem){
-        //Searcher searcher = BestFS();
-        // searcher.search(searchable)
-
-       // Searcher s= BestFS.search(searchable);
-        cout<< "Im here thank god"<<endl;
-        return "a solution";
+    Solution solve(Problem) {
+        DepthFirstSearch<Problem, Solution> bfs = DepthFirstSearch<Problem, Solution>();
+        Solution s = bfs.search(this->searchable);
+        //cout << s << endl;
+        return s;
     }
 
-    ObjectAdapter(MySearchable<Problem> searchable1){
+    ObjectAdapter(MySearchable<Problem> searchable1) {
         this->searchable = searchable1;
     }
 };

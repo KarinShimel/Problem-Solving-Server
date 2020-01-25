@@ -11,6 +11,10 @@ public:
     virtual void handleClient(int serverSocket, int clientSocket){
         std::cout << "Client Handler handleClient() Method" << std::endl;
     }
+
+    virtual ClientHandler* duplicate(){
+        std::cout << "Client Handler duplicate() Method" << std::endl;
+    }
 };
 
 

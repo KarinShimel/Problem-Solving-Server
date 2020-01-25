@@ -6,12 +6,13 @@
 #define SEARCHALGO_COMP_ISEARCHER_H
 
 #include "ISearchable.h"
+#include "MySearchable.h"
 
 
 template <class Problem,class Solution>
 class ISearcher{
-    Solution search(ISearchable<Problem> searchable)=0;
-    int getNumberOfNodesEvaluated()=0;
+    virtual Solution search(MySearchable<Problem> searchable)=0;
+    virtual int getNumberOfNodesEvaluated()=0;
 };
 
 

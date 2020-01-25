@@ -5,22 +5,19 @@
 #include <unistd.h>
 #include <vector>
 #include <cstring>
-#include <vector>
-#include <sstream>
 #include <iterator>
-
+#include <mutex>
+#include <sys/socket.h>
 
 #include "MyClientHandler.h"
 #include "MySearchable.h"
-#include "State.h"
-#include "BestFS.h"
 #include "CacheManager.h"
 #include "ObjectAdapter.h"
 
+extern std::mutex mutex_lock;
 using namespace std;
 
 void MyClientHandler::handleClient(int serverSocket, int clientSocket) {
-    //std::cout << "Handling ..." << std::endl;
     vector<vector<int>> matVector;
     vector<int> lineVector;
     int len, number;
@@ -37,6 +34,9 @@ void MyClientHandler::handleClient(int serverSocket, int clientSocket) {
         std::string a(buffer);
         len = strlen(buffer);
         line = buffer;
+        // deleting the \n
+        if(line[line.length()-1]=='\n')
+            line.resize(line.length() - 1);
         if (a.find("end") != std::string::npos) {
             // Finished the data
             break;
@@ -46,8 +46,11 @@ void MyClientHandler::handleClient(int serverSocket, int clientSocket) {
                 firstDigit = line.find_first_not_of(notDigitOptions, i);
                 lastDigit = line.find_first_not_of(digitOptions, firstDigit + 1);
                 if (firstDigit != -1) {
-                    number = stoi(line.substr(firstDigit, (lastDigit - firstDigit)));
-                    lineVector.push_back(number);
+                    string b = line.substr(firstDigit, (lastDigit - firstDigit));
+                    if (b[0] != '\n') {
+                        number = std::stoi(line.substr(firstDigit, (lastDigit - firstDigit)));
+                        lineVector.push_back(number);
+                    }
                 } else {
                     break;//no more numbers
                 }
@@ -57,21 +60,11 @@ void MyClientHandler::handleClient(int serverSocket, int clientSocket) {
             }
             matVector.push_back(lineVector);
         }
-
         lines++;
-        //std::cout << a << '\n';
     }
     lines -= 3;
     cols -= 1;
-    cout << lines << "," << cols << endl;
-    
-    /*cout << "------------PRINT MAT---------------" << endl;
-    for (int i = 0; i < matVector.size(); i++) {
-        for (int j = 0; j < matVector[i].size(); j++) {
-            cout << matVector[i][j] << "  ";
-        }
-        cout << "" << endl;
-    }*/
+    //cout << "lines: "<<lines << ",cols: " << cols << endl;
 
     // flattening the matrix
     vector<int> flatMat;
@@ -84,29 +77,47 @@ void MyClientHandler::handleClient(int serverSocket, int clientSocket) {
     std::stringstream result;
     std::copy(flatMat.begin(), flatMat.end(), std::ostream_iterator<int>(result, " "));
     string flatMatrix = result.str().c_str();
-    // Creating the problem
+
     MySearchable<Point> matrixSearchable = MySearchable<Point>(flatMatrix, lines, cols);
+    matrixSearchable.setGoal(lines, cols);
     // Checking if there is a solution to the problem in the cache
     CacheManager<string, string> cacheManager = CacheManager<string, string>(5);
     bool solutionInCache = true;
     // Creating a solution
+
     string solution;
     try {
         // If the solution is in the cache manager
         solution = cacheManager.get(flatMatrix);
+        //solutionInCache = false; Check for solving all the problems
     } catch (const char *e) {
         // If the solution is not in the cache manager - we will solve the problem after we get an error
         solutionInCache = false;
         cout << "not in files" << endl;
     }
+
     // If there isn't a solution, we will solve the problem
     if (!solutionInCache) {
-        ObjectAdapter<Point,string> objectAdapter = ObjectAdapter<Point,string>(matrixSearchable);
-        Point p = Point(0,0);
+        ObjectAdapter<Point, string> objectAdapter = ObjectAdapter<Point, string>(matrixSearchable);
+        Point p = Point(0, 0);
         solution = objectAdapter.solve(p);
+        cacheManager.insert(flatMatrix, solution);
     }
     // sending the solution
-    cout << "Solution: " << solution << endl;
+    char char_array[solution.length() + 1];
+    strcpy(char_array, solution.c_str());
+    std::vector<char> vec(solution.c_str(), solution.c_str() + (solution.length() + 1));
+    char *a = &vec[0];
+    char *y = new char[solution.length() + 1];
+    std::strcpy(y, solution.c_str());
 
+    int is_sent = send(clientSocket, a, solution.length() + 1, 0);
+    if (is_sent == -1) {
+        std::cout << "Error sending message" << std::endl;
+    }
+}
 
+ClientHandler *MyClientHandler::duplicate() {
+    auto newClient = new MyClientHandler();
+    return newClient;
 }

@@ -13,16 +13,18 @@
 #include <map>
 #include <fstream>
 #include <stack>
+
 using namespace std;
 
 #include <vector>
 #include <sstream>
 #include <iterator>
-
+#include <algorithm>
 
 
 using namespace std;
-template<class Problem,class Solution>
+
+template<class Problem, class Solution>
 class CacheManager {
 private:
     unsigned int cacheSize;
@@ -47,8 +49,8 @@ public:
     }
 };
 
-template<class Problem,class Solution>
-void CacheManager<Problem,Solution>::insert(Problem key, Solution obj) {
+template<class Problem, class Solution>
+void CacheManager<Problem, Solution>::insert(Problem key, Solution obj) {
     auto item = cacheMap.find(key);
     // if the key exists - setting the value
     if (item != cacheMap.end()) {
@@ -67,38 +69,51 @@ void CacheManager<Problem,Solution>::insert(Problem key, Solution obj) {
         cacheMap.insert({key, {obj, data.begin()}});
     }
     // writing to the files
+    string filename = key;
+    for (int i = filename.length() - 1; i >= 0; --i) {
+        if (filename[i] == ' ')
+            filename.erase(i, 1);
+    }
+    filename.resize (255);
     ofstream myFile;
-    string file =  key;
-    myFile.open(file, ios::binary | ios::out);
-    myFile.write((char *) &obj, sizeof(Solution));
+    myFile.open(filename, ios::app);
+    if (myFile.is_open()) {
+        myFile << obj << endl;
+    }
     myFile.close();
 }
 
-template<class Problem,class Solution>
-void CacheManager<Problem,Solution>::foreach(function<void(Solution &)> function) {
+template<class Problem, class Solution>
+void CacheManager<Problem, Solution>::foreach(function<void(Solution &)> function) {
     for (Problem key: data) {
         function(cacheMap[key].first);
     }
 }
 
-template<class Problem,class Solution>
-Solution CacheManager<Problem,Solution>::get(Problem key) {
+template<class Problem, class Solution>
+Solution CacheManager<Problem, Solution>::get(Problem key) {
     auto item = cacheMap.find(key);
     if (item == cacheMap.end()) {
         // check if in data
         ifstream in_file;
-        string file_name = key;
-        in_file.open(file_name, ios::binary | ios::in);
+        string filename = key;
+        for (int i = filename.length() - 1; i >= 0; --i) {
+            if (filename[i] == ' ')
+                filename.erase(i, 1);
+        }
+        filename.resize (255);
+        in_file.open(filename,ios::in);
         if (!in_file) {
             // if not in data
             throw "an error";
         }
         // getting the object from the file
-        Solution object;
-        in_file.read((char *) &object, sizeof(Solution));
-        this->insert(key, object);
+        Solution s;
+        getline(in_file,s);
+        //in_file.read(object);
+        this->insert(key, s);
         in_file.close();
-        return object;
+        return s;
     }
     // informing the algorithm we used the object
     use(item);
