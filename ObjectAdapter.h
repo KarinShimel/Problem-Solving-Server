@@ -21,8 +21,8 @@ public:
     MySearchable<Problem> searchable;
 
     Solution solve(Problem) {
-        DepthFirstSearch<Problem, Solution> bfs = DepthFirstSearch<Problem, Solution>();
-        Solution s = bfs.search(this->searchable);
+        AStar<Problem, Solution> aStar = AStar<Problem, Solution>();
+        Solution s = aStar.search(this->searchable);
         //cout << s << endl;
         return s;
     }
