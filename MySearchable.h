@@ -14,7 +14,6 @@ using std::cout;
 
 class Point {
     // The class that represents a point in the matrix
-
 private:
     int i;
     int j;
@@ -34,13 +33,8 @@ public:
         this->j = row;
     }
 
-
     bool operator==(const Point &p) const {
         return (this->i == p.i && this->j == p.j);
-    }
-
-    void printP() {
-        cout << this->getI() << "," << this->getJ() << endl;
     }
 
     friend ostream &operator<<(ostream &out, const Point &s) {
@@ -68,7 +62,8 @@ public:
         State<T> nullState = (State<Point>("null", Point(0, 0), this->matrix.at(0).at(0)));
         this->initial.setFrom(nullptr);
     }
-    State<T> getGoalState(){
+
+    State<T> getGoalState() {
         return this->goalState;
     }
 

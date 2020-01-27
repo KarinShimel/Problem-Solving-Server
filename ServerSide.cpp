@@ -3,7 +3,6 @@
 //
 
 #include "ServerSide.h"
-#include "MySerialServer.h"
 #include "MyClientHandler.h"
 #include "MyParallelServer.h"
 using namespace std;
@@ -18,7 +17,10 @@ namespace boot
         MyClientHandler myClientHandler = MyClientHandler();
         ClientHandler * clientHandler = &myClientHandler;
         // Running the server and handler
-        server->open(stoi((argv)[1]),clientHandler);
+       if(argc<2)
+           server->open(5600,clientHandler);
+       else
+           server->open(stoi((argv)[1]),clientHandler);
         return 0;
     }
 }

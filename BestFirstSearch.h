@@ -14,7 +14,7 @@
 template<class Problem, class Solution>
 class BestFirstSearch : public Searcher<Problem, Solution> {
 
-    class StateComparator {
+    class StateComp {
     public:
         bool operator()(State<Problem> *left, State<Problem> *right) {
             return (left->getCost() > right->getCost());
@@ -50,27 +50,22 @@ public:
         this->initialization();
         State<Problem> *curr = searchable->getInitial();
         State<Problem> *goal = searchable->getGoalState();
-
-        priority_queue < State<Problem> * , vector<State<Problem> *>, StateComparator > openPQueue;
+        priority_queue < State<Problem> * , vector<State<Problem> *>, StateComp > openPQueue;
         openPQueue.push(curr);
-
         while (!openPQueue.empty()) {
             curr = openPQueue.top();
             openPQueue.pop();
             nodesEvaluated++;
-
             curr->setVisited(true);
-            if (curr==goal) {
+            if (curr == goal) {
                 return getPath(curr);
             }
-
             // get all the possible states from this state
             vector<State<Problem> *> possibleStates = searchable->getPossibleStates(curr);
             long upToCost = curr->getCost();
             for (int i = 0; i < possibleStates.size(); i++) {
                 State<Problem> *adj = possibleStates[i];
                 long adjFutureTotalCost = adj->getCost() + upToCost;
-
                 if (adj->getCost() > adjFutureTotalCost) {
                     adj->setFrom(curr);
                     adj->setCost(adjFutureTotalCost);
@@ -85,9 +80,9 @@ public:
         return getPath(searchable->getGoalState());
     }
 
-    priority_queue<State<Problem> *, vector<State<Problem> *>, StateComparator> updatePriorityOrder
-            (priority_queue<State<Problem> *, vector<State<Problem> *>, StateComparator> curQueue) {
-        priority_queue < State<Problem> * , vector<State<Problem> *>, StateComparator > newQueue;
+    priority_queue<State<Problem> *, vector<State<Problem> *>, StateComp> updatePriorityOrder
+            (priority_queue<State<Problem> *, vector<State<Problem> *>, StateComp> curQueue) {
+        priority_queue < State<Problem> * , vector<State<Problem> *>, StateComp > newQueue;
         while (!curQueue.empty()) {
             State<Problem> *temp = curQueue.top();
             curQueue.pop();

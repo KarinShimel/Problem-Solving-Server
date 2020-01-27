@@ -86,15 +86,15 @@ public:
         while (!openList.empty()) {
             // for each point in the open list
             stateStar temp = openList.top();
-            stateStar *q = new stateStar();
-            q->state = temp.state;
-            q->cameFrom = temp.cameFrom;
-            q->f = temp.f;
-            q->h = temp.h;
+            stateStar *node = new stateStar();
+            node->state = temp.state;
+            node->cameFrom = temp.cameFrom;
+            node->f = temp.f;
+            node->h = temp.h;
             nodesEvaluated++;
 
             openList.pop();
-            list<State<Point>> neighbors = searchable.getAllPossibleStates(q->state);
+            list<State<Point>> neighbors = searchable.getAllPossibleStates(node->state);
             list<stateStar> starNeighbors;
 
             while (!neighbors.empty()) {
@@ -102,7 +102,7 @@ public:
                 State<Point> curr = neighbors.front();
                 stateStar *neighbor = new stateStar();
                 neighbor->state = curr;
-                neighbor->cameFrom = q;
+                neighbor->cameFrom = node;
                 neighbor->f = (int) (curr.getCost() + getHeuVal(curr));
                 neighbor->h = getHeuVal(curr);
                 // pushing the neighbor to the new struct list
@@ -111,10 +111,10 @@ public:
                 neighbors.pop_front();
             }
             // for each neighbor
-            for (stateStar x: starNeighbors) {
-                if (x.state == goalState) {
+            for (stateStar starNeighbor: starNeighbors) {
+                if (starNeighbor.state == goalState) {
                     // We reached the goal!!
-                    return getPath((stateStar) x, searchable);
+                    return getPath((stateStar) starNeighbor, searchable);
                 }
 
                 list<stateStar> temp;
@@ -122,7 +122,7 @@ public:
                 int t;
                 while (!openList.empty()) {
                     // Checking if x is in the open list
-                    if (x.state == openList.top().state) {
+                    if (starNeighbor.state == openList.top().state) {
                         xInOpenList = true;
                         t = openList.top().f;
                     }
@@ -136,15 +136,15 @@ public:
                     temp.pop_front();
                 }
                 if (xInOpenList) {
-                    if (t <= x.f)
+                    if (t <= starNeighbor.f)
                         continue;
                 }
-                if (doesExistsInList(x, closedList, &t) && t <= x.f)
+                if (doesExistsInList(starNeighbor, closedList, &t) && t <= starNeighbor.f)
                     continue;
                 else
-                    openList.push(x);
+                    openList.push(starNeighbor);
             }
-            closedList.push_back(*q);
+            closedList.push_back(*node);
         }
         return "no path found";
     }
