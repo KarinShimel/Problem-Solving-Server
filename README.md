@@ -1,8 +1,11 @@
-# Program that implements diffrent search algorithms
+# Generic Problem Solving Server
 
-Given a problem from the client, the program is finding shortest path in a graph while calculating the cost.
+Provides a generic implemantion of a server using sockets and multi-threading.
+The Solver inetrface specifies the methods for The "Problem" and "Solution" using The ClientHandler which is an API for handaling Streams of data recived by the socket.
 
-Searching the shortest path by checking with a few implemented algorithms such as: A*,BFS,DFS and BestFs.
+This project was built based on the SOLID design pattrem priniciples and provides an easy way for managing server-side comunication.
+
+Implementing the search for the shortest path by checking with a few algorithms such as: A*, BFS, DFS and BestFs.
 In addition, creating an empirical experiment and comparing the algorithms results.
 
 To Compile:
